@@ -58,7 +58,7 @@ JFM_U_PCA_plot = ggplot() +
 	ggtitle(expression("JFM U"[500] ~"EOFs")) +
   theme_bw() +
   theme(legend.position = "none") +
-  facet_wrap(~variable, ncol = 6)
+  facet_wrap(~variable, ncol = 3)
 
 
 
@@ -81,13 +81,13 @@ ggplot(data = JFM_U_preds_long, aes(year, value)) +
   geom_line() +
   theme_bw() +
   ggtitle(expression("JFM U"[500] ~"PCs")) +
-  facet_wrap(~variable, ncol = 6)
+  facet_wrap(~variable, ncol = 3)
 
 
-pdf("Final figures/Figure_1.pdf", width = 15, height = 5)
+pdf("Final figures/Figure_1.pdf", width = 8, height = 8)
 grid.arrange(JFM_U_PCA_plot,
              JFM_U_PCA_plot_ts,
-             nrow = 2)
+             layout_matrix = rbind(1,1,1,2,2))
 dev.off()
 
 

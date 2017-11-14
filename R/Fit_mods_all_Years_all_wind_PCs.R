@@ -43,16 +43,11 @@ west <- map2SpatialPolygons(west, IDs = west_IDs, proj4string = CRS("+proj=longl
 
 source("R/Get_skill.R")
 
-# try x-val for the NINO, PC1, and NAO models
 cand_preds_xval = list(c("PC1"),
                        c("PC1","PC2","PC3","PC4", "PC5", "PC6"),
                        c("NINO3.4"),
                        c("NINO3.4","PNA"),
                        c("NINO3.4","NAO","PDO"))
-
-# cand_preds_xval = list(c("PU","SU"),
-#                        c("PU","PC2","PC3","PC4", "SU"),
-#                        c("PU","SU","PC2","PC3","PC4","PC6"))
 
 MAE_SS_us = MAE_SS_west = matrix(nrow = length(cand_preds_xval), ncol = nrow(JFM_preds))
 

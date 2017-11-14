@@ -49,6 +49,5 @@ source("R/PC1_Pred_KNN_SST.R") # Fig S7
 # make the Figure 4 and S8
 source("R/SST_U_Precip_Cors.R") # Figs 4 and S8
 
-# update the figure files in the manuscript folder (run the following line in terminal)
-# cp -a /Users/davidfarnham/Google\ Drive/Zonal_Wind_Precip_Paper/Final\ figures/. /Users/davidfarnham/Google\ Drive/Manuscripts/JET_ENSO_PRECIP/figs/
-
+# for the response to reviewers regarding the choice of JFM vs. DJF:
+source("R/Response to reviewers/Make_Composite_Precip_Fig_alt.R")
