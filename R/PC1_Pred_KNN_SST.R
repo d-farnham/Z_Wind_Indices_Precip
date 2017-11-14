@@ -9,8 +9,6 @@ climate_ind_D = climate_ind %>% dplyr::filter(month %in% c(12)) %>%
 
 JFM_D_preds = merge(merge(JFM_U_preds, climate_ind_D, by = "year"), D_SST_preds, by = "year")
 
-require(corrplot)
-require(psych)
 M = cor(JFM_D_preds)
 M_rank = cor(JFM_D_preds, method = "spearman",use = "complete.obs")
 
@@ -30,8 +28,6 @@ JFM_D_preds = JFM_D_preds %>% dplyr::mutate(PC1_scale = (PC1 - mean(PC1))/sd(PC1
 
 # training set should include the first 50 years of data
 training = JFM_D_preds %>% dplyr::filter(year < 2016)
-
-library(kknn)
 
 
 # use leave one-out CV to choose k for each of the models

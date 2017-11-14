@@ -1,6 +1,6 @@
 rm(list = ls())
-package.list <- list("dplyr", "ggplot2", "readr", "tidyr", "ggthemes", "readr", "ggmap", "lubridate",
-                     "maps", "reshape2", "ncdf4", "gridExtra", "data.table", "magrittr", "maptools", "plyr")
+package.list <- list("dplyr", "ggplot2", "readr", "tidyr", "ggthemes", "readr", "ggmap", "lubridate","kknn","corrplot","psych",
+                     "maps", "reshape2", "ncdf4", "gridExtra", "data.table", "magrittr", "maptools", "plyr","GGally","sp","ppcor")
 source('R/load_packages.R') # clear workspace, clear console, load packages
 
 # run the scripts to load and process the data

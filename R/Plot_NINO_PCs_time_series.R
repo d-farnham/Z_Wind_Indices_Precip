@@ -45,7 +45,7 @@ JFM_U_preds_ENSO_long_precentile = JFM_U_preds_ENSO_long %>% dplyr::group_by(ENS
                                                                               top_12.5 = quantile(value, prob = 0.875),
                                                                               median = quantile(value, prob = 0.5))
 
-library(GGally)
+
 PC_par_coord_plot = 
   ggplot(JFM_U_preds_ENSO_long_precentile %>% dplyr::filter(variable != "NINO3.4_smoothed")) +
   geom_pointrange(aes(variable, y = median, ymin = bot_12.5, ymax = top_12.5, col = ENSO_phase), 

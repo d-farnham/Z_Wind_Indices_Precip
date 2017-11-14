@@ -31,9 +31,6 @@ JFM_preds = merge(climate_ind_JFM, JFM_U_preds,by = c("year")) %>%
 usa = map("world",regions = "usa", plot = FALSE, fill = TRUE)
 load(file = "data/Processed data/western_states.RData")
 
-require(sp)
-require(maptools)
-
 usa_IDs <- sapply(strsplit(usa$names, ":"), function(x) x[1])
 west_IDs <- sapply(strsplit(west$names, ":"), function(x) x[1])
 

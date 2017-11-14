@@ -143,8 +143,6 @@ us <- data.frame(map("state", plot=FALSE)[c("x","y")])
 
 # find the grids inside CONUS
 usa = map("world",regions = "usa", plot = FALSE, fill = TRUE)
-require(sp)
-require(maptools)
 
 usa_IDs <- sapply(strsplit(usa$names, ":"), function(x) x[1])
 usa <- map2SpatialPolygons(usa, IDs = usa_IDs, proj4string = CRS("+proj=longlat +datum=WGS84"))

@@ -106,8 +106,7 @@ climate_ind_D = climate_ind %>% dplyr::filter(month %in% c(12)) %>%
 
 
 D_SST_NINO = merge(D_SST_preds, climate_ind_D, by = "year")
-require(corrplot)
-require(psych)
+
 M = cor(D_SST_NINO)
 M_rank = cor(D_SST_NINO, method = "pearson",use = "complete.obs")
 
@@ -115,10 +114,6 @@ pval <- psych::corr.test(D_SST_NINO, adjust="none", method="spearman")$p
 
 pdf("Ref figures/D_SST_PCs_NINO_cor.pdf", width = 12, height = 5)
 corrplot(M_rank, p.mat=pval, sig.level = 0.05)
-dev.off()
-
-pdf("Ref figures/D_SST_EOFs.pdf", width = 25, height = 5)
-print(D_SST_PCA_plot)
 dev.off()
 
 rm(list = ls())

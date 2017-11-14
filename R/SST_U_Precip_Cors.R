@@ -198,8 +198,6 @@ precip_PC_cors = merge(precip_U_cors, precip_U_cors_p, by = c("latitude", "longi
 us <- data.frame(map("state", plot=FALSE)[c("x","y")])
 # find the grids inside the US
 usa = map("world",regions = "usa", plot = FALSE, fill = TRUE)
-require(sp)
-require(maptools)
 
 usa_IDs <- sapply(strsplit(usa$names, ":"), function(x) x[1])
 usa <- map2SpatialPolygons(usa, IDs = usa_IDs, proj4string = CRS("+proj=longlat +datum=WGS84"))
@@ -249,7 +247,7 @@ NINO_ind_D = climate_ind %>% dplyr::filter(month %in% c(12)) %>%
 SST_dec_U_NINO_preds = merge(SST_dec_U_preds, NINO_ind_D, by = "year", all = T) %>%
   dplyr::select(year, latitude, longitude, SST_anom_ld, variable, value_ld, NINO3.4, NINO4) 
 
-library(ppcor)
+
 SST_dec_PC1_NINO_cors = ddply(SST_dec_U_NINO_preds %>% dplyr::filter(variable == "PC1" &
                                                                !is.na(SST_anom_ld)), .(latitude, longitude, variable), function(x) pcor.test(x$SST_anom_ld,x$value_ld,x$NINO3.4, method = "spearman")) %>%
   dplyr::mutate(var = paste0(variable," & SST | Nino3.4 or ", variable," & Precip | Nino3.4"))
@@ -259,7 +257,7 @@ SST_dec_PC_NINO_cors = SST_dec_PC1_NINO_cors
 
 precip_U_NINO_preds = merge(precip_U_preds, NINO_ind_D, by = "year", all = T)
 
-library(ppcor)
+
 precip_PC1_NINO3.4_cors = ddply(precip_U_NINO_preds %>% dplyr::filter(variable == "PC1" &
                                                                         !is.na(precip_ld)), .(latitude, longitude, variable), function(x) pcor.test(x$precip_ld,x$value_ld,x$NINO3.4, method = "spearman")) %>%
   dplyr::mutate(var = paste0(variable," & SST | Nino3.4 or ", variable," & Precip | Nino3.4"))
