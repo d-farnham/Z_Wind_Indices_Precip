@@ -188,12 +188,12 @@ mod2_lin_cor = cor.test(mod2_cor_subset$mean, mod2_cor_subset$PC1, method = "pea
 
 
 # model 1
-print(mod_lin_cor$estimate) # 0.6841013
-print(mod_rank_cor$estimate) # 0.6629162
+print(mod_lin_cor$estimate) # 0.6622427
+print(mod_rank_cor$estimate) # 0.6433852
 
 # model2
-print(mod2_lin_cor$estimate) # 0.817597
-print(mod2_rank_cor$estimate) # 0.7948022
+print(mod2_lin_cor$estimate) # 0.7982881
+print(mod2_rank_cor$estimate) # 0.7750096
 
 
 
