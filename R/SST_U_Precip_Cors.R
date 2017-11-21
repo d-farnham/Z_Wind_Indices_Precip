@@ -13,7 +13,6 @@ SST_long_d = SST_long %>% data.table() %>%
 # now let's detrend the SST
 source("R/linear.detrend.R")
 
-# NEED TO CHECK THAT THE BELOW WORKS HOW I THINK IT DOES
 SST_long_d_detrend = SST_long_d %>% dplyr::filter(latitude > (-25) &
                                                     latitude < 65) %>%
   dplyr::group_by(latitude, longitude) %>%
@@ -113,8 +112,6 @@ grid.arrange(SST_by_ENSO_PC1_plot,
 dev.off()
 
 
-
-
 # now lets compute the correlations b/t Dec SSTs and JFM zonal wind indices
 load('data/Processed data/SST_long.RData')
 
@@ -138,7 +135,7 @@ load("data/Processed data/JFM_U_preds.RData")
 SST_dec_U_preds = merge(SST_long_dec, JFM_U_preds, by = "year") %>%
   melt(id.vars = c("year", "latitude", "longitude", "SST", "SST_clim", "SST_anom"))
 
-# now check the rank cors after detrending both SST and PU/SU
+# now check the rank cors after detrending both SST and the zonal wind indices
 source("R/linear.detrend.R")
 
 SST_dec_U_preds = SST_dec_U_preds %>% dplyr::group_by(latitude, longitude, variable) %>%
@@ -178,8 +175,6 @@ precip_U_preds = precip_U_preds %>% dplyr::group_by(latitude, longitude, variabl
   dplyr::ungroup() %>%
   dplyr::mutate(longitude = ifelse(longitude > 180, longitude - 360, longitude)) %>%
   data.frame()
-
-
 
 
 # now check the rank cors

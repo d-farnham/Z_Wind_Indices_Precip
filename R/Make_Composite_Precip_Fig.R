@@ -21,7 +21,7 @@ ENSO_phase = climate_ind %>% dplyr::mutate(NINO3.4_smoothed = as.numeric(stats::
                                     ifelse(NINO3.4_smoothed < (-1), "cool", "neutral"))) %>%
   dplyr::select(year, ENSO_phase, NINO3.4_smoothed)
 
-# how many EN/LN/neatrual events
+# how many EN/LN/neutral events
 aggregate(year ~ ENSO_phase, FUN = length, data = ENSO_phase)
 #     ENSO_phase year
 # 1       cool   11
@@ -44,19 +44,19 @@ JFM_precip_2016 = JFM_precip %>% dplyr::filter(year == 2016) %>%
                                  data.frame()
 
 JFM_precip_1998 = JFM_precip %>% dplyr::filter(year == 1998) %>%
-  dplyr::mutate(ENSO_phase = 1998) %>%
-  dplyr::select(latitude, longitude, ENSO_phase, precip_anom) %>%
-  data.frame()
+                                 dplyr::mutate(ENSO_phase = 1998) %>%
+                                 dplyr::select(latitude, longitude, ENSO_phase, precip_anom) %>%
+                                 data.frame()
 
 JFM_precip_1983 = JFM_precip %>% dplyr::filter(year == 1983) %>%
-  dplyr::mutate(ENSO_phase = 1983) %>%
-  dplyr::select(latitude, longitude, ENSO_phase, precip_anom) %>%
-  data.frame()
+                                 dplyr::mutate(ENSO_phase = 1983) %>%
+                                 dplyr::select(latitude, longitude, ENSO_phase, precip_anom) %>%
+                                 data.frame()
 
 JFM_precip_2003 = JFM_precip %>% dplyr::filter(year == 2003) %>%
-  dplyr::mutate(ENSO_phase = 2003) %>%
-  dplyr::select(latitude, longitude, ENSO_phase, precip_anom) %>%
-  data.frame()
+                                 dplyr::mutate(ENSO_phase = 2003) %>%
+                                 dplyr::select(latitude, longitude, ENSO_phase, precip_anom) %>%
+                                 data.frame()
 
 # concatanate the data.frames for plotting
 JFM_ENSO_precip_all = rbind(JFM_precip_1998,JFM_precip_2016,JFM_ENSO_precip_non_2016,JFM_precip_1983,JFM_precip_2003) %>%
@@ -74,12 +74,10 @@ usa_pts <- SpatialPoints(JFM_ENSO_precip_all[,c("longitude","latitude")],proj4st
 usa_ii = !is.na(over(usa_pts,usa))
 
 
-# plot the two La Nina that are closest in phase space to 2016
 world <- data.frame(map("world", plot=FALSE)[c("x","y")])
 state <- data.frame(map("state", plot=FALSE)[c("x","y")])
 
 JFM_ENSO_precip_all = JFM_ENSO_precip_all %>% dplyr::mutate(ENSO_phase = factor(ENSO_phase, levels = c("warm", "cool", "1983", "2003", "1998", "2016")))
-
 
 EN_LN_1983_1998_2003_2016_precip_plot = 
 ggplot() + 

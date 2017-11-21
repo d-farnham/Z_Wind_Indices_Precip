@@ -21,7 +21,7 @@ source('R/PCA_U_JFM.R') # Fig 1 (should take about 30 s)
 # run a script that plots a composite for the past EN events, LN events, neutral events, and some select years
 source('R/Make_Composite_Precip_Fig.R') # Fig S1
 
-# plott he correaltions between the zonal wind PCs, NINO indices, NAO, PNA, and PDO with gridded precipitation
+# plot the correlations between the zonal wind PCs, NINO indices, NAO, PNA, and PDO with gridded precipitation
 source('R/Get_Plot_pred_precip_Coefs.R') # Fig S2
 
 # now let's fit 3 models and compute the skill score by lat/lon and save these maps
@@ -35,7 +35,7 @@ source("R/Plot_NINO_PCs_time_series.R") # Fig 3
 
 # add a script to load the monthly sea surface temps
 # source('R/load_SST.R') # This cannot be run because the raw file is too large for Github 
-# (the processed file is already present in the data/"Processed data directory)
+# (the processed file is already present in the 'data/Processed data' directory)
 
 # plot the SSTs from the 1983, 1998, 2003, and 2016 events
 source("R/plot_SST_ex_years.R") # Fig S5
@@ -49,5 +49,3 @@ source("R/PC1_Pred_KNN_SST.R") # Fig S7
 # make the Figure 4 and S8
 source("R/SST_U_Precip_Cors.R") # Figs 4 and S8
 
-# for the response to reviewers regarding the choice of JFM vs. DJF:
-source("R/Response to reviewers/Make_Composite_Precip_Fig_alt.R")

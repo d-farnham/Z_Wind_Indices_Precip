@@ -22,12 +22,12 @@ climate_ind_JFM = climate_ind %>% dplyr::filter(month %in% c(1,2,3)) %>%
                    PNA = mean(PNA),
                    NAO = mean(NAO),
                    PDO = mean(PDO))
+
 JFM_preds = merge(climate_ind_JFM, JFM_U_preds,by = c("year")) %>%
   dplyr::group_by(year) %>%
   dplyr::summarise_each(funs(mean))
 
-# find the grids inside the US and inside of the WESTERN STATES
-
+# find the grids inside the US and inside of the western states
 usa = map("world",regions = "usa", plot = FALSE, fill = TRUE)
 load(file = "data/Processed data/western_states.RData")
 
@@ -114,7 +114,6 @@ for(yyear in 1:nrow(JFM_preds)){
 																		skill_dat[c(usa_ii),]$precip,
 																		skill_dat[c(usa_ii),]$sd_precip)
 
-		
 		MAE_SS_west[preds,yyear] = MAE_SS(skill_dat[c(west_ii),]$pred, 
 																			skill_dat[c(west_ii),]$mean_precip, 
 																			skill_dat[c(west_ii),]$precip,
@@ -317,9 +316,7 @@ MAE_west_plot_density =
   ggtitle("West") +
   facet_wrap(~variable)
 
-
-
-# check how many of teh year's have positive skill scores
+# check how many of the year's have positive skill scores
 aggregate(data = HEIDKE_SS_us_df %>% dplyr::mutate(value_pos = ifelse(value > 0, 1, 0)), value_pos ~ variable, FUN = sum)
 #                 variable value_pos
 # 1                 PC1        50

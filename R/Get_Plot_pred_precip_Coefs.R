@@ -2,28 +2,18 @@ load("data/Processed data/us_precip.Rdata")
 load("data/Processed data/climate_ind.Rdata")
 load("data/Processed data/JFM_U_preds.RData")
 
-# # load functions to calcuate model skill
-# source("R/Get_skill.R")
-# 
-# # identify the El Nino events
-# warm_years = climate_ind %>% dplyr::mutate(NINO3.4_smoothed = stats::filter(NINO3.4, rep(1, 3)/3, sides = 2)) %>%
-#   dplyr::filter(month == 1 &
-#                   NINO3.4_smoothed > 1) %>%
-#   dplyr::select(year)
-
 climate_ind_JFM = climate_ind %>% dplyr::filter(month %in% c(1,2,3)) %>%
   dplyr::group_by(year) %>%
   dplyr::summarise(NINO3.4 = mean(NINO3.4),
                    PNA = mean(PNA),
                    NAO = mean(NAO),
                    PDO = mean(PDO))
+
 JFM_preds = merge(climate_ind_JFM, 
                   JFM_U_preds,
                   by = c("year")) %>%
   dplyr::group_by(year) %>%
   dplyr::summarise_each(funs(mean))
-
-
 
 JFM_mean_precip = us_precip %>% data.table() %>%
     dplyr::filter(month %in% c(1,2,3)) %>%
@@ -45,20 +35,20 @@ JFM_precip = us_precip %>% data.table() %>%
     data.frame()
   
   
-  precip_pred = merge(JFM_precip,JFM_preds, by = "year")
+precip_pred = merge(JFM_precip,JFM_preds, by = "year")
   
   
-  precip_pred_sub = precip_pred[ , c("latitude", "longitude", "precip", "PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "NINO3.4", "PNA", "NAO", "PDO")] 
+precip_pred_sub = precip_pred[ , c("latitude", "longitude", "precip", "PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "NINO3.4", "PNA", "NAO", "PDO")] 
   
-  precip_pred_sub_long = melt(precip_pred_sub, id.vars = c("latitude", "longitude", "precip"))
+precip_pred_sub_long = melt(precip_pred_sub, id.vars = c("latitude", "longitude", "precip"))
   
-  cor_all_est = plyr::ddply(precip_pred_sub_long, c("variable","latitude","longitude"), function(x) cor.test(x$value, x$precip)$"estimate") %>% 
+cor_all_est = plyr::ddply(precip_pred_sub_long, c("variable","latitude","longitude"), function(x) cor.test(x$value, x$precip)$"estimate") %>% 
     setNames(c("variable","latitude","longitude","cor"))
   
-  cor_all_p = plyr::ddply(precip_pred_sub_long, c("variable","latitude","longitude"), function(x) cor.test(x$value, x$precip)$"p.value")  %>% 
+cor_all_p = plyr::ddply(precip_pred_sub_long, c("variable","latitude","longitude"), function(x) cor.test(x$value, x$precip)$"p.value")  %>% 
     setNames(c("variable","latitude","longitude","p"))
   
-  cor_all = merge(cor_all_est, cor_all_p, by = c("variable", "latitude", "longitude")) %>%
+cor_all = merge(cor_all_est, cor_all_p, by = c("variable", "latitude", "longitude")) %>%
                   dplyr::mutate(sig = ifelse(p < 0.05, 1, 0))
 
 us <- data.frame(map("state", plot=FALSE)[c("x","y")])

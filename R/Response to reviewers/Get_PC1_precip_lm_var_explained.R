@@ -2,15 +2,6 @@ load("data/Processed data/us_precip.Rdata")
 load("data/Processed data/climate_ind.Rdata")
 load("data/Processed data/JFM_U_preds.RData")
 
-# # load functions to calcuate model skill
-# source("R/Get_skill.R")
-# 
-# # identify the El Nino events
-# warm_years = climate_ind %>% dplyr::mutate(NINO3.4_smoothed = stats::filter(NINO3.4, rep(1, 3)/3, sides = 2)) %>%
-#   dplyr::filter(month == 1 &
-#                   NINO3.4_smoothed > 1) %>%
-#   dplyr::select(year)
-
 climate_ind_JFM = climate_ind %>% dplyr::filter(month %in% c(1,2,3)) %>%
   dplyr::group_by(year) %>%
   dplyr::summarise(NINO3.4 = mean(NINO3.4),
@@ -22,7 +13,6 @@ JFM_preds = merge(climate_ind_JFM,
                   by = c("year")) %>%
   dplyr::group_by(year) %>%
   dplyr::summarise_each(funs(mean))
-
 
 
 JFM_mean_precip = us_precip %>% data.table() %>%
@@ -57,6 +47,7 @@ JFM_precip = us_precip %>% data.table() %>%
   
   p_val_all = plyr::ddply(precip_pred_sub_long, c("variable","latitude","longitude"), function(x) summary(lm(x$precip ~ x$value))$coefficients[2,"Pr(>|t|)"]) %>% 
     setNames(c("variable","latitude","longitude","p_val"))
+  
   # only select the locations inside of CONUS
   
   us <- data.frame(map("state", plot=FALSE)[c("x","y")])

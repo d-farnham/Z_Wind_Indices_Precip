@@ -62,7 +62,7 @@ D_SST_PCA_plot = ggplot() +
   facet_wrap(~variable,
              ncol = pc.retain)
 
-# make the SST predictors # !!! NOTE THAT I SCALED THE U FIELD HERE
+# make the SST predictors
 years = D_SST$year
 D_SST_preds = as.matrix(scale(D_SST[,-1])) %*% D_SST_PCA$rotation[,1:pc.retain] %>% 
   data.table() %>%

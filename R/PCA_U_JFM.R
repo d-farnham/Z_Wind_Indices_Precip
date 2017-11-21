@@ -36,7 +36,7 @@ world[world$x < 0 & !is.na(world$x),]$x = world[world$x < 0 & !is.na(world$x),]$
 state <- data.frame(map("state", plot=FALSE)[c("x","y")])
 state[state$x < 0 & !is.na(state$x),]$x = state[state$x < 0 & !is.na(state$x),]$x + 360
 
-# need to shade in the 'western' states as we have defined them
+# shade in the 'western' states as we have defined them
 load(file = "data/Processed data/western_states.RData")
 west[west$x < 0 & !is.na(west$x)]$x = west[west$x < 0 & !is.na(west$x)]$x + 360
 
@@ -59,8 +59,6 @@ JFM_U_PCA_plot = ggplot() +
   theme_bw() +
   theme(legend.position = "none") +
   facet_wrap(~variable, ncol = 3)
-
-
 
 
 # make the U predictors #

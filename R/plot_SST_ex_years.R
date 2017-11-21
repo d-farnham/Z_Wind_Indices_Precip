@@ -14,15 +14,14 @@ SST_long = SST_long %>% data.table() %>%
 # now let's detrend the SST
 source("R/linear.detrend.R")
 
-# NEED TO CHECK THAT THE BELOW WORKS HOW I THINK IT DOES
 SST_long_detrend = SST_long %>% dplyr::filter(latitude > (-25) &
-                                                latitude < 65) %>%
-  dplyr::group_by(latitude, longitude) %>%
-  dplyr::filter(!is.na(SST_anom)) %>%
-  dplyr::mutate(SST_anom_ld = linear.detrend(y = SST_anom, year = year))
+                                              latitude < 65) %>%
+                                dplyr::group_by(latitude, longitude) %>%
+                                dplyr::filter(!is.na(SST_anom)) %>%
+                                dplyr::mutate(SST_anom_ld = linear.detrend(y = SST_anom, year = year))
 
 SST_long_detrend_subset = SST_long_detrend %>% dplyr::filter(year %in% c(1983, 1998, 2003, 2016)) %>%
-  dplyr::select(year,longitude, latitude, SST_anom_ld)
+                                               dplyr::select(year,longitude, latitude, SST_anom_ld)
 
 world <- data.frame(map("world", plot=FALSE)[c("x","y")])
 world[world$x < 0 & !is.na(world$x),]$x = world[world$x < 0 & !is.na(world$x),]$x + 360
@@ -50,28 +49,27 @@ SST_anom_plot =
 load('data/Processed data/SST_long.RData')
 
 SST_long_d = SST_long %>% data.table() %>%
-  dplyr::mutate(year = year(date)) %>%
-  dplyr::filter(month %in% c(12)) %>%
-  dplyr::group_by(latitude, longitude, year) %>%
-  dplyr::summarise(SST = mean(SST)) %>%
-  dplyr::group_by(latitude, longitude) %>%
-  dplyr::mutate(SST_clim = mean(SST),
-                SST_anom = SST - SST_clim) %>%
-  data.frame()
+                          dplyr::mutate(year = year(date)) %>%
+                          dplyr::filter(month %in% c(12)) %>%
+                          dplyr::group_by(latitude, longitude, year) %>%
+                          dplyr::summarise(SST = mean(SST)) %>%
+                          dplyr::group_by(latitude, longitude) %>%
+                          dplyr::mutate(SST_clim = mean(SST),
+                                        SST_anom = SST - SST_clim) %>%
+                          data.frame()
 
 # now let's detrend the SST
 source("R/linear.detrend.R")
 
-# NEED TO CHECK THAT THE BELOW WORKS HOW I THINK IT DOES
 SST_long_d_detrend = SST_long_d %>% dplyr::filter(latitude > (-25) &
                                                     latitude < 65) %>%
-  dplyr::group_by(latitude, longitude) %>%
-  dplyr::filter(!is.na(SST_anom)) %>%
-  dplyr::mutate(SST_anom_ld = linear.detrend(y = SST_anom, year = year))
+                                    dplyr::group_by(latitude, longitude) %>%
+                                    dplyr::filter(!is.na(SST_anom)) %>%
+                                    dplyr::mutate(SST_anom_ld = linear.detrend(y = SST_anom, year = year))
 
 
 SST_long_d_detrend_subset = SST_long_d_detrend %>% dplyr::filter(year %in% c(1982, 1997, 2002, 2015)) %>%
-  dplyr::select(year,longitude, latitude, SST_anom_ld)
+                                                   dplyr::select(year,longitude, latitude, SST_anom_ld)
 
 world <- data.frame(map("world", plot=FALSE)[c("x","y")])
 world[world$x < 0 & !is.na(world$x),]$x = world[world$x < 0 & !is.na(world$x),]$x + 360

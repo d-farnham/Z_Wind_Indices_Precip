@@ -26,7 +26,6 @@ JFM_preds = merge(climate_ind_JFM,
 
 
 # try x-val for the NINO, PC1, and PC1-PC6 models
-
 cand_preds_xval = list(c("PC1"),
                        c("PC1","PC2","PC3","PC4", "PC5", "PC6"),
 											 c("NINO3.4"))
@@ -112,7 +111,6 @@ for(yyear in 1:nrow(JFM_preds)){
 skill_lat_lon = data.frame(unique(precip_pred_obs_list[[1]] %>% dplyr::select(c(latitude, longitude))),
                            MAE = NA,
                            HEIDKE = NA)
-
 
 cand_preds_names = c("PC1", "PC1-PC6", "NINO3.4")
 

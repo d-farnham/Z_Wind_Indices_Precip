@@ -5,14 +5,14 @@ load('data/Processed data/climate_ind.Rdata')
 ENSO_phase = climate_ind %>% dplyr::mutate(NINO3.4_smoothed = as.numeric(stats::filter(NINO3.4, rep(1, 3)/3, sides = 2)),
                                      NINO3_smoothed = as.numeric(stats::filter(NINO3, rep(1, 3)/3, sides = 2)),
                                      NINO4_smoothed = as.numeric(stats::filter(NINO4, rep(1, 3)/3, sides = 2))) %>%
-  dplyr::filter(month == 1) %>%
-  dplyr::mutate(ENSO_phase = ifelse(NINO3.4_smoothed > 1, "warm",
-                             ifelse(NINO3.4_smoothed < (-1), "cool", "neutral"))) %>%
-  dplyr::select(year, ENSO_phase)
+                             dplyr::filter(month == 1) %>%
+                             dplyr::mutate(ENSO_phase = ifelse(NINO3.4_smoothed > 1, "warm",
+                                                            ifelse(NINO3.4_smoothed < (-1), "cool", "neutral"))) %>%
+                             dplyr::select(year, ENSO_phase)
 
 NINO_3.4_JFM_phase = climate_ind %>% dplyr::mutate(NINO3.4_smoothed = as.numeric(stats::filter(NINO3.4, rep(1, 3)/3, sides = 2))) %>%
-  dplyr::filter(month == 2) %>%
-  dplyr::select(year, NINO3.4_smoothed)
+                                     dplyr::filter(month == 2) %>%
+                                     dplyr::select(year, NINO3.4_smoothed)
 
 JFM_U_preds_ENSO = merge(merge(JFM_U_preds, ENSO_phase, by = "year"), NINO_3.4_JFM_phase, by = "year") %>%
                         dplyr::filter(!is.na(ENSO_phase)) %>%

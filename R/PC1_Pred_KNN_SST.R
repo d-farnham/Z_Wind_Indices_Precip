@@ -105,8 +105,8 @@ train2_long = melt(train2, id.vars = "year") %>% dplyr::group_by(year) %>%
 
 pred_long = melt(pred, id.vars = "year") %>% dplyr::group_by(year) %>%
   dplyr::summarise(mean = mean(value),
-                   top = quantile(value, 0.95),
-                   bot  = quantile(value, 0.05))
+                   top = quantile(value, 0.9),
+                   bot  = quantile(value, 0.1))
 
 pred2_long = melt(pred2, id.vars = "year") %>% dplyr::group_by(year) %>%
   dplyr::summarise(mean = mean(value),
@@ -188,12 +188,12 @@ mod2_lin_cor = cor.test(mod2_cor_subset$mean, mod2_cor_subset$PC1, method = "pea
 
 
 # model 1
-print(mod_lin_cor$estimate) # 0.6622427
-print(mod_rank_cor$estimate) # 0.6433852
+print(mod_lin_cor$estimate) # 0.6841013
+print(mod_rank_cor$estimate) # 0.6629162
 
 # model2
-print(mod2_lin_cor$estimate) # 0.7982881
-print(mod2_rank_cor$estimate) # 0.7750096
+print(mod2_lin_cor$estimate) # 0.817597
+print(mod2_rank_cor$estimate) # 0.7948022
 
 
 
