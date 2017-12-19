@@ -70,7 +70,6 @@ SST_by_ENSO_PC1_plot =
                        midpoint = 0,low="blue", mid = "white",  high = "red",na.value = "white") +
   facet_grid(ENSO_phase~PC1_phase_lab, labeller=label_parsed) +
   theme(legend.position = "bottom") 
-#+ ggtitle("Dec")
 
 SST_U_NINO_dif =
   merge(SST_U_NINO_preds %>% dplyr::filter(PC1_phase == "high") %>% 
@@ -80,33 +79,10 @@ SST_U_NINO_dif =
           dplyr::select(latitude, longitude, ENSO_phase,SST_avg) %>%
           setNames(c("latitude", "longitude", "ENSO_phase","PC1_low_SST_avg")),
         by = c("latitude", "longitude", "ENSO_phase")) %>% 
-  # dplyr::filter(latitude > (-20) &
-  #                                                                          latitude < 20) %>% 
   dplyr::mutate(PC1_SST_avg_dif = PC1_high_SST_avg - PC1_low_SST_avg) %>%
   dplyr::group_by(ENSO_phase) %>%
   dplyr::mutate(mean_PC1_SST_avg_dif = mean(PC1_SST_avg_dif)) %>%
   dplyr::mutate(PC1_SST_avg_dif2 = PC1_SST_avg_dif - mean_PC1_SST_avg_dif)
-
-
-SST_dif_by_ENSO_PC1_plot = 
-  ggplot() +
-  geom_tile(data = SST_U_NINO_dif, aes(x = (longitude),y = latitude, fill=(PC1_SST_avg_dif2))) +
-  geom_contour(data = SST_U_NINO_dif, aes(x = (longitude),y = latitude,z = PC1_SST_avg_dif2), breaks = c(seq(0.4,2,by = 0.4)), col = "black", linetype = "solid") +
-  geom_contour(data = SST_U_NINO_dif, aes(x = (longitude),y = latitude,z = PC1_SST_avg_dif2), breaks = c(seq(-0.4,-2,by = -0.4)), col = "black", linetype = "dashed") +
-  geom_path(data=world, aes(x,y)) +
-  geom_rect(data = mask_nh, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.75) +
-  scale_y_continuous(limits = c(-20,60)) +
-  scale_x_continuous(limits = c(50,359.999)) +
-  xlab("lon") + 
-  ylab("lat") +
-  theme_bw() +
-  scale_fill_gradient2(name="SST* anom \n (deg C)", limits = c(-0.75,0.75), 
-                       midpoint = 0,low="blue", mid = "white",  high = "red",na.value = "white") +
-  facet_wrap(~ENSO_phase,
-             ncol = 1) +
-  theme(legend.position = "bottom") 
-#+ ggtitle("Difference between PC1 phases (Dec)")
-
 
 SST_U_NINO_preds = merge(SST_dec_U_preds, NINO_ind_d, by = "year", all = T) %>%
   dplyr::select(year, latitude, longitude, SST, SST_anom_ld,SST_anom, NINO3.4, PC1) %>%
@@ -167,7 +143,7 @@ SST_dif_by_ENSO_PC1_plot =
                        midpoint = 0,low="blue", mid = "white",  high = "red",na.value = "white") +
   facet_grid(ENSO_phase~PC1_phase_lab, labeller=label_parsed) +
   theme(legend.position = "bottom") 
-#+ ggtitle("Difference between PC1 phases (Dec)")
+
 
 
 pdf(file = 'Final figures/Figure_4.pdf', width = 12, height = 6)
