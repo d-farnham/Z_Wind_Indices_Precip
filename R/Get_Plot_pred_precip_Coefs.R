@@ -15,6 +15,13 @@ JFM_preds = merge(climate_ind_JFM,
   dplyr::group_by(year) %>%
   dplyr::summarise_each(funs(mean))
 
+
+# cors of PC1 with PNA, NAO, and NINO3.4
+cor.test(JFM_preds$PNA, JFM_preds$PC1, method = "pearson") # 0.6198233
+cor.test(JFM_preds$NAO, JFM_preds$PC1, method = "pearson") # -0.488492
+cor.test(JFM_preds$NINO3.4, JFM_preds$PC1, method = "pearson") # 0.6564319 
+
+
 JFM_mean_precip = us_precip %>% data.table() %>%
     dplyr::filter(month %in% c(1,2,3)) %>%
     dplyr::filter(!is.na(precip)) %>%

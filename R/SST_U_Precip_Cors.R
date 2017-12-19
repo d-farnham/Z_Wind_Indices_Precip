@@ -23,7 +23,7 @@ SST_long_d_detrend = SST_long_d %>% dplyr::filter(latitude > (-25) &
 load('data/Processed data/climate_ind.Rdata')
 
 NINO_ind_d = climate_ind %>% dplyr::filter(month %in% c(12)) %>%
-  dplyr::mutate(year = year +1) %>%
+  dplyr::mutate(year = year + 1) %>%
   dplyr::group_by(year) %>%
   dplyr::summarise(NINO3.4 = mean(NINO3.4),
                    NINO4 = mean(NINO4))
@@ -33,10 +33,11 @@ load("data/Processed data/JFM_U_preds.RData")
 SST_dec_U_preds = merge(SST_long_d_detrend, JFM_U_preds, by = "year") %>%
   melt(id.vars = c("year", "latitude", "longitude", "PC1","SST", "SST_anom_ld", "SST_anom"))
 
+
 SST_U_NINO_preds = merge(SST_dec_U_preds, NINO_ind_d, by = "year", all = T) %>%
   dplyr::select(year, latitude, longitude, SST, SST_anom_ld,SST_anom, NINO3.4, PC1) %>%
   dplyr::mutate(ENSO_phase = ifelse(NINO3.4 > quantile(NINO3.4, prob = 2/3, na.rm = TRUE), "warm", ifelse(NINO3.4 <= quantile(NINO3.4, prob = 1/3, na.rm = TRUE), "cool", "neutral")),
-                PC1_phase = ifelse(PC1 > quantile(PC1, prob = 1/2, na.rm = TRUE), "high", ifelse(PC1 < quantile(PC1, prob = 1/2, na.rm = TRUE), "low", NA))) %>%
+                PC1_phase = ifelse(PC1 > quantile(PC1, prob = 1/2, na.rm = TRUE), "high", ifelse(PC1 <= quantile(PC1, prob = 1/2, na.rm = TRUE), "low", NA))) %>%
   dplyr::group_by(latitude, longitude, ENSO_phase, PC1_phase) %>%
   dplyr::summarise(SST_avg = mean(SST_anom, na.rm = TRUE),
                    n = length(SST_anom)/6)
@@ -47,13 +48,13 @@ SST_U_NINO_preds$PC1_phase_lab = SST_U_NINO_preds$PC1_phase
 mask_nh = data.frame(ymin = 20, ymax = 60, xmin = 50, xmax = 359.999)
 
 
-levels(SST_U_NINO_preds$PC1_phase_lab)<- c("PC1 < P[50](PC1)", NA, "PC1 > P[50](PC1)")
+levels(SST_U_NINO_preds$PC1_phase_lab)<- c("PC1 <= P[50](PC1)", NA, "PC1 > P[50](PC1)")
 
 world <- data.frame(map("world", plot=FALSE)[c("x","y")])
 world[world$x < 0 & !is.na(world$x),]$x = world[world$x < 0 & !is.na(world$x),]$x + 360
 
 SST_by_ENSO_PC1_plot = 
-ggplot() +
+  ggplot() +
   geom_tile(data = SST_U_NINO_preds %>% dplyr::filter(!is.na(PC1_phase)), aes(x = (longitude),y = latitude, fill=(SST_avg))) +
   geom_contour(data = SST_U_NINO_preds %>% dplyr::filter(!is.na(PC1_phase)), aes(x = (longitude),y = latitude, z = SST_avg), breaks = c(seq(0.4,4,by = 0.4)), col = "black", linetype = "solid") +
   geom_contour(data = SST_U_NINO_preds %>% dplyr::filter(!is.na(PC1_phase)), aes(x = (longitude),y = latitude, z = SST_avg), breaks = c(seq(-0.4,-4,by = -0.4)), col = "black", linetype = "dashed") +
@@ -68,26 +69,27 @@ ggplot() +
   scale_fill_gradient2(name="SST anom \n (deg C)", limits = c(-2,2), 
                        midpoint = 0,low="blue", mid = "white",  high = "red",na.value = "white") +
   facet_grid(ENSO_phase~PC1_phase_lab, labeller=label_parsed) +
-  theme(legend.position = "bottom") +
-  ggtitle("Dec")
+  theme(legend.position = "bottom") 
+#+ ggtitle("Dec")
 
 SST_U_NINO_dif =
-merge(SST_U_NINO_preds %>% dplyr::filter(PC1_phase == "high") %>% 
-        dplyr::select(latitude, longitude, ENSO_phase,SST_avg) %>%
-        setNames(c("latitude", "longitude", "ENSO_phase","PC1_high_SST_avg")),
-      SST_U_NINO_preds %>% dplyr::filter(PC1_phase == "low") %>% 
-        dplyr::select(latitude, longitude, ENSO_phase,SST_avg) %>%
-        setNames(c("latitude", "longitude", "ENSO_phase","PC1_low_SST_avg")),
-      by = c("latitude", "longitude", "ENSO_phase")) %>% dplyr::filter(latitude > (-20) &
-                                                                       latitude < 20) %>% 
+  merge(SST_U_NINO_preds %>% dplyr::filter(PC1_phase == "high") %>% 
+          dplyr::select(latitude, longitude, ENSO_phase,SST_avg) %>%
+          setNames(c("latitude", "longitude", "ENSO_phase","PC1_high_SST_avg")),
+        SST_U_NINO_preds %>% dplyr::filter(PC1_phase == "low") %>% 
+          dplyr::select(latitude, longitude, ENSO_phase,SST_avg) %>%
+          setNames(c("latitude", "longitude", "ENSO_phase","PC1_low_SST_avg")),
+        by = c("latitude", "longitude", "ENSO_phase")) %>% 
+  # dplyr::filter(latitude > (-20) &
+  #                                                                          latitude < 20) %>% 
   dplyr::mutate(PC1_SST_avg_dif = PC1_high_SST_avg - PC1_low_SST_avg) %>%
   dplyr::group_by(ENSO_phase) %>%
   dplyr::mutate(mean_PC1_SST_avg_dif = mean(PC1_SST_avg_dif)) %>%
   dplyr::mutate(PC1_SST_avg_dif2 = PC1_SST_avg_dif - mean_PC1_SST_avg_dif)
-  
+
 
 SST_dif_by_ENSO_PC1_plot = 
-ggplot() +
+  ggplot() +
   geom_tile(data = SST_U_NINO_dif, aes(x = (longitude),y = latitude, fill=(PC1_SST_avg_dif2))) +
   geom_contour(data = SST_U_NINO_dif, aes(x = (longitude),y = latitude,z = PC1_SST_avg_dif2), breaks = c(seq(0.4,2,by = 0.4)), col = "black", linetype = "solid") +
   geom_contour(data = SST_U_NINO_dif, aes(x = (longitude),y = latitude,z = PC1_SST_avg_dif2), breaks = c(seq(-0.4,-2,by = -0.4)), col = "black", linetype = "dashed") +
@@ -102,13 +104,76 @@ ggplot() +
                        midpoint = 0,low="blue", mid = "white",  high = "red",na.value = "white") +
   facet_wrap(~ENSO_phase,
              ncol = 1) +
-  theme(legend.position = "bottom") +
-  ggtitle("Difference between PC1 phases (Dec)")
+  theme(legend.position = "bottom") 
+#+ ggtitle("Difference between PC1 phases (Dec)")
+
+
+SST_U_NINO_preds = merge(SST_dec_U_preds, NINO_ind_d, by = "year", all = T) %>%
+  dplyr::select(year, latitude, longitude, SST, SST_anom_ld,SST_anom, NINO3.4, PC1) %>%
+  dplyr::mutate(ENSO_phase = ifelse(NINO3.4 > quantile(NINO3.4, prob = 2/3, na.rm = TRUE), "warm", ifelse(NINO3.4 <= quantile(NINO3.4, prob = 1/3, na.rm = TRUE), "cool", "neutral")),
+                PC1_phase = ifelse(PC1 > quantile(PC1, prob = 1/2, na.rm = TRUE), "high", ifelse(PC1 <= quantile(PC1, prob = 1/2, na.rm = TRUE), "low", NA)))
+
+SST_U_NINO_preds = SST_U_NINO_preds %>% unique()
+dim(SST_U_NINO_preds)
+
+unique_lat_lon = unique(SST_U_NINO_preds[,c("latitude", "longitude")]) %>% dplyr::filter(!is.na(latitude))
+wilcox.sig = data.frame(unique_lat_lon,
+                        warm = NA,
+                        neutral = NA,
+                        cool = NA)
+for(ii in 1:nrow(unique_lat_lon)){
+P1_low = SST_U_NINO_preds %>% dplyr::filter(latitude == unique_lat_lon$latitude[ii] &
+                                            longitude == unique_lat_lon$longitude[ii] &
+                                            PC1_phase == "low") %>%
+                              dplyr::ungroup() %>%
+                              dplyr::select(SST_anom,ENSO_phase)
+
+P1_high = SST_U_NINO_preds %>% dplyr::filter(latitude == unique_lat_lon$latitude[ii] &
+                                              longitude == unique_lat_lon$longitude[ii] &
+                                              PC1_phase == "high") %>%
+                               dplyr::ungroup() %>%
+                               dplyr::select(SST_anom,ENSO_phase)
+  
+wilcox.sig$warm[ii] = wilcox.test(x = P1_high$SST_anom[P1_high$ENSO_phase == "warm"],
+                                         y = P1_low$SST_anom[P1_low$ENSO_phase == "warm"])$p.value
+
+wilcox.sig$neutral[ii] = wilcox.test(x = P1_high$SST_anom[P1_high$ENSO_phase == "neutral"],
+                                            y = P1_low$SST_anom[P1_low$ENSO_phase == "neutral"])$p.value
+
+wilcox.sig$cool[ii] = wilcox.test(x = P1_high$SST_anom[P1_high$ENSO_phase == "cool"],
+                                         y = P1_low$SST_anom[P1_low$ENSO_phase == "cool"])$p.value
+print(ii)  
+}
+
+wilcox.sig_long = melt(wilcox.sig, id.vars = c("latitude", "longitude")) %>% setNames(c("latitude", "longitude", "ENSO_phase", "p_value"))
+
+SST_U_NINO_dif$PC1_phase_lab = "(PC1 > P[50](PC1)) - (PC1 <= P[50](PC1))"
+wilcox.sig_long$PC1_phase_lab = "(PC1 > P[50](PC1)) - (PC1 <= P[50](PC1))"
+
+SST_dif_by_ENSO_PC1_plot = 
+  ggplot() +
+  geom_tile(data = SST_U_NINO_dif, aes(x = (longitude),y = latitude, fill=(PC1_SST_avg_dif2))) +
+  geom_contour(data = SST_U_NINO_dif, aes(x = (longitude),y = latitude,z = PC1_SST_avg_dif2), breaks = c(seq(0.4,2,by = 0.4)), col = "black", linetype = "solid") +
+  geom_contour(data = SST_U_NINO_dif, aes(x = (longitude),y = latitude,z = PC1_SST_avg_dif2), breaks = c(seq(-0.4,-2,by = -0.4)), col = "black", linetype = "dashed") +
+  geom_path(data=world, aes(x,y)) +
+  geom_point(data = wilcox.sig_long %>% dplyr::filter(p_value < 0.05), aes(x = (longitude),y = latitude), shape = "x", alpha = 0.4, size = 0.4) +
+  geom_rect(data = mask_nh, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), fill = "grey", alpha = 0.75) +
+  scale_y_continuous(limits = c(-20,60)) +
+  scale_x_continuous(limits = c(50,359.999)) +
+  xlab("lon") + 
+  ylab("lat") +
+  theme_bw() +
+  scale_fill_gradient2(name="SST* anom \n (deg C)", limits = c(-1.45,1.45), breaks = c(-1,0,1), 
+                       midpoint = 0,low="blue", mid = "white",  high = "red",na.value = "white") +
+  facet_grid(ENSO_phase~PC1_phase_lab, labeller=label_parsed) +
+  theme(legend.position = "bottom") 
+#+ ggtitle("Difference between PC1 phases (Dec)")
+
 
 pdf(file = 'Final figures/Figure_4.pdf', width = 12, height = 6)
 grid.arrange(SST_by_ENSO_PC1_plot,
              SST_dif_by_ENSO_PC1_plot,
-             layout_matrix = rbind(c(1,1,2)))
+             layout_matrix = rbind(c(1,1,1,1,1,1,1,1,1,2,2,2,2,2)))
 dev.off()
 
 
@@ -149,7 +214,7 @@ SST_U_cors = ddply(SST_dec_U_preds %>% dplyr::filter(!is.na(SST_anom_ld)), .(lat
 
 
 SST_U_cors_p = ddply(SST_dec_U_preds %>% dplyr::filter(!is.na(SST_anom_ld)), .(latitude, longitude, variable), 
-                      function(x) cor.test(x$SST_anom_ld,x$value_ld, method = "spearman", use = "complete.obs")$p.value) %>%
+                     function(x) cor.test(x$SST_anom_ld,x$value_ld, method = "spearman", use = "complete.obs")$p.value) %>%
   setNames(c("latitude", "longitude", "variable", "p_value")) %>%
   dplyr::mutate(var = paste0(variable," & SST or ", variable," & Precip"))
 
@@ -244,7 +309,7 @@ SST_dec_U_NINO_preds = merge(SST_dec_U_preds, NINO_ind_D, by = "year", all = T) 
 
 
 SST_dec_PC1_NINO_cors = ddply(SST_dec_U_NINO_preds %>% dplyr::filter(variable == "PC1" &
-                                                               !is.na(SST_anom_ld)), .(latitude, longitude, variable), function(x) pcor.test(x$SST_anom_ld,x$value_ld,x$NINO3.4, method = "spearman")) %>%
+                                                                       !is.na(SST_anom_ld)), .(latitude, longitude, variable), function(x) pcor.test(x$SST_anom_ld,x$value_ld,x$NINO3.4, method = "spearman")) %>%
   dplyr::mutate(var = paste0(variable," & SST | Nino3.4 or ", variable," & Precip | Nino3.4"))
 
 SST_dec_PC_NINO_cors = SST_dec_PC1_NINO_cors

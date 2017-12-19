@@ -20,24 +20,10 @@ dev.off()
 
 
 # scale the PC1 
-JFM_D_preds = JFM_D_preds %>% dplyr::mutate(PC1_scale = (PC1 - mean(PC1))/sd(PC1),
-                                            PC3_scale = (PC3 - mean(PC3))/sd(PC3),
-                                            PC6_scale = (PC6 - mean(PC6))/sd(PC6),
-                                            NINO_EC1 = NINO1_2 - NINO4,
-                                            NINO_EC2 = NINO3 - NINO4)
+JFM_D_preds = JFM_D_preds %>% dplyr::mutate(PC1_scale = (PC1 - mean(PC1))/sd(PC1))
 
 # training set should include the first 50 years of data
 training = JFM_D_preds %>% dplyr::filter(year < 2016)
-
-
-# use leave one-out CV to choose k for each of the models
-par(mfrow = c(2,1))
-train_mod1 = train.kknn(formula = PC1 ~ SST_PC1, data = training, kmax = 20, kernel = "gaussian")
-plot(train_mod1)
-train_mod2 = train.kknn(formula = PC1 ~ SST_PC1 + SST_PC3, data = training, kmax = 20, kernel = "gaussian")
-plot(train_mod2)
-
-
 
 k.mod1 = 8
 k.mod2 = 8
