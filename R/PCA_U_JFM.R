@@ -18,8 +18,8 @@ JFM_U = dcast(data = U_long_JFM, year ~ longitude + latitude, value.var = "u_500
 
 JFM_U_PCA = prcomp(JFM_U[,-1], scale. = TRUE)
 
-round((JFM_U_PCA$sdev/sum(JFM_U_PCA$sdev))[1:10], digits = 2) * 100
-#[1] 16 11  8  7  6  6  4  4  3  2
+round((JFM_U_PCA$sdev/sum(JFM_U_PCA$sdev))[1:10], digits = 3) * 100
+# [1] 16.2 10.5  8.6  6.9  6.4  5.6  4.1  3.9  2.5  2.4
 
 lat_lon = data.frame(matrix(unlist(strsplit(names(JFM_U)[-1],"_")), ncol = 2, byrow=TRUE))
 colnames(lat_lon) = c("longitude","latitude")

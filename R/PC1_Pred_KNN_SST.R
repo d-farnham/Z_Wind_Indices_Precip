@@ -22,7 +22,7 @@ dev.off()
 # scale the PC1 
 JFM_D_preds = JFM_D_preds %>% dplyr::mutate(PC1_scale = (PC1 - mean(PC1))/sd(PC1))
 
-# training set should include the first 50 years of data
+# training set should include the first 66 years of data
 training = JFM_D_preds %>% dplyr::filter(year < 2016)
 
 k.mod1 = 8
